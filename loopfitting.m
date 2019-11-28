@@ -1,3 +1,5 @@
+% Optimization method for parameter estimation
+
 global plot_flag Data statevar
 
 %Data format: Six1 Pax3 Myf5 Mrf4 MyoD MyoG
