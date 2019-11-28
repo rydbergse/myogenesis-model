@@ -1,3 +1,5 @@
+% Basic function to calculate rates of gene expression
+
 function deriv = dydt_myogenesis(t,statevar)
 
 global kp3 km5 kmd kmi 
