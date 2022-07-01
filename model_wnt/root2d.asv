@@ -1,0 +1,28 @@
+function dy = ssh_model(t,y,p)  
+    
+    % Initial conditions
+    Ptc_t = y(1); Gli = y(2); Gli3 = y(3); Gli3R = y(4); Myf5 = y(5);
+    
+    % Parameters
+    [Shh, K_shh, K_PC_Ptc, Smo_t, K_PC_Smo, k1, k2, V1, V2, V3, K_1, K_2, Km1, Km2,...
+        kd1, kd2, kd3, Vdeg, Kdeg, K_I, Imir, Km5, n, m]= deal(p{:});
+    
+    % Solve non-linear equation for equilibrium
+    Ptc = Ptc_t*K_shh/(K_shh+Shh); % Not bound patched
+    solvePC = @(PC) PC_t - (PC + Ptc*PC/(K_PC_Ptc + PC) +  Smo_t*PC/(K_PC_Smo+ PC));
+    PC = fsolve(solvePC, PC_t);
+    
+    % Equilibrium relationships
+    Smo_PC = Smo_t*PC/(K_PC_Smo+ PC); % Smoothened bound to PC
+    Ptc_PC = Ptc*PC/(K_PC_Ptc + PC); % Patched bound to PC
+    
+    % Differential equations
+    dy = zeros(5,1);
+    dy(1) = k1 + V1.*(Gli^n)./((K_1^n)+(Gli^n)) - kd1*Ptc_t;
+    dy(2) = k2 + V2.*(Gli^m)./((K_2^m)+(Gli^m)) - kd2*Gli - Vdeg*Gli/(Kdeg*(1 + Smo_PC/K_I) + Gli + Gli3);
+    dy(3) = (k2 + V2.*(Gli^m)./((K_2^m)+(Gli^m)))/(1 + Imir*Myf5/(Km5 + Myf5)) -  ...
+        kd2*Gli3 - Vdeg*Gli3/(Kdeg*(1 + Smo_PC/K_I) + Gli + Gli3);
+    dy(4) = Vdeg*Gli3/(Kdeg*(1 + Smo_PC/K_I) + Gli + Gli3) - kd2*Gli3R;
+    dy(5) = V3*(Gli/Km1)/(1+Gli/Km1+Gli3R/Km2) - kd3*Myf5;
+    
+end

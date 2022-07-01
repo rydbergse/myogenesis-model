@@ -1,0 +1,53 @@
+function dy = notch_model(t,y,p,t_signal)  
+    
+    % Initial conditions
+    Notch = y(1); 
+    ND = y(2);
+    NICD = y(3); 
+    NR = y(4);
+    Hey = y(5);
+    Pax7 = y(6);
+    MyoD = y(7);
+    MyoG = y(8);
+    Pax7_MyoD = y(9);
+    
+    % Parameters
+    parameters = num2cell(p);
+    [Dll, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, RBPJK, V1, V2, V3, V4,...
+        K1, K2, K3, K4, K5, K6, K7, K8]= deal(parameters{:});
+
+    if t > max(t_signal) || t < min(t_signal)
+        Dll = 0;
+    end
+
+    % Differential equations
+%     dy = zeros(9,1);
+%     dy(1) = k1 - k2.*Notch.*Dll + k3.*ND - k4.*Notch;
+%     dy(2) = k2.*Notch.*Dll - k3.*ND - k5.*ND;
+%     dy(3) = k5.*ND - k6.*NICD.*RBPJK + k7.*NR;
+%     dy(4) = k6.*NICD.*RBPJK - k7.*NR - k8.*NR;
+%     dy(5) = V1.*(NR./K1)./(1 + Hey./K2 + NR./K2 + Hey.*NR./(K1.*K2)) - k9.*Hey;
+%     dy(6) = V2.*(NR/K3)./(1 + NR./K3 + MyoG./K4 + NR.*MyoG./(K3.*K4)) - k10.*Pax7 - ...
+%         k11.*Pax7.*MyoD + k12.*Pax7_MyoD;
+%     dy(7) = V3.*(Pax7./K5 + MyoG./K6)./(1 + Pax7./K5 + MyoG./K6 + Hey./K7) - k13.*MyoD - ...
+%         k11.*Pax7.*MyoD + k12.*Pax7_MyoD;
+%     dy(8) = V4.*(MyoD)./(K8 + MyoD) - k14.*MyoG;
+%     dy(9) = k11.*Pax7.*MyoD - k12.*Pax7_MyoD;
+    
+    dy = zeros(9,1);
+    dy(1) = k1 - k2.*Notch.*Dll + k3.*ND - k4.*Notch;
+    dy(2) = k2.*Notch.*Dll - k3.*ND - k5.*ND;
+    dy(3) = k5.*ND - k6.*NICD.*RBPJK + k7.*NR;
+    dy(4) = k6.*NICD.*RBPJK - k7.*NR - k8.*NR;
+    dy(5) = V1.*(NR./K1)./(1 + Hey./K2 + NR./K2 + Hey.*NR./(K1.*K2)) - k9.*Hey;
+    dy(6) = V2.*(NR/K3)./(1 + NR./K3 + MyoG./K4 + NR.*MyoG./(K3.*K4)) - k10.*Pax7 - ...
+        k11.*Pax7.*MyoD + k12.*Pax7_MyoD;
+    dy(7) = V3.*(1 + MyoG./K6)./(1 + MyoG./K6 + Hey./K7) - k13.*MyoD - ...
+        k11.*Pax7.*MyoD + k12.*Pax7_MyoD;
+    dy(8) = V4.*(MyoD.^2)./((K8.^2) + (MyoD.^2)) - k14.*MyoG;
+    dy(9) = k11.*Pax7.*MyoD - k12.*Pax7_MyoD;
+    
+    variables = {'Notch', 'Notch-Dll', 'NICD', 'NICD-RBPJK', 'Hey', 'Pax7', 'MyoD', 'MyoG',...
+        'Pax7-MyoD'};
+    
+end
